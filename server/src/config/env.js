@@ -45,6 +45,8 @@ export const env = {
   isProduction,
   port: Number(process.env.PORT) || 5000,
   mongodbUri: required('MONGODB_URI'),
+  razorPayApiKey:required("RAZORPAY_API_KEY"),
+  razorPayApiSecret:required("RAZORPAY_API_SECRET"),
   jwtSecret,
   jwtExpiresInHours,
   clientOrigins,
