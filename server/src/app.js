@@ -6,6 +6,7 @@ import { env } from './config/env.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import leadRoutes from './routes/leadRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -41,6 +42,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/admin/auth', authRoutes);
 app.use('/api/admin/leads', leadRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
