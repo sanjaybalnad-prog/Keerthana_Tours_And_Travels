@@ -1,5 +1,5 @@
-import { razorpay } from "../config/razorpay";
-import { ApiError } from "../utils/ApiError";
+import { razorpay } from "../config/razorpay.js";
+import { ApiError } from "../utils/ApiError.js";
 
 export async function createOrder(req, res){
     const amount = Number(req.body.price);
