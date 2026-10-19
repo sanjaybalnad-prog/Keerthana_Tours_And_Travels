@@ -88,7 +88,7 @@ export default function PackageBooking({
 
 
 function BookingModal({
-    name,
+    name: packageName,
     price,
     duration,
     includes,
@@ -96,14 +96,20 @@ function BookingModal({
 }: TPackage & { onClose: () => void }) {
     const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const PHONE_NUMBER_REGEX = /^[6-9]\d{9}$/;
+
+    const [name, setName] = useState("");
     const [headCount, setHeadCount] = useState(1);
     const [email, setEmail] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("");
     const [error, setError] = useState("");
 
-    
+
     const handleFieldValueChange = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
         switch (e.target.name) {
+            case "name":
+                setName(e.target.value);
+                break;
+
             case "headCount":
                 setHeadCount(Number(e.target.value));
                 break;
@@ -125,6 +131,11 @@ function BookingModal({
     const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (!name) {
+            setError("Name is required");
+            return;
+        }
+
         if (isNaN(headCount)) {
             setError("Headcount should be a number");
             return;
@@ -140,12 +151,14 @@ function BookingModal({
             return;
         }
 
-        if (PHONE_NUMBER_REGEX.test(phoneNumber)) {
+        if (!PHONE_NUMBER_REGEX.test(phoneNumber)) {
             setError("Enter a valid Indian phone number");
             return
         }
-        
-        
+
+        setError("")
+        // TODO: Create Order
+
     }
 
     return (
@@ -154,7 +167,7 @@ function BookingModal({
                 <div className="flex items-start justify-between">
                     <div>
                         <h2 className="font-display text-xl font-semibold text-ink">
-                            {name}
+                            {packageName}
                         </h2>
                         <p className="mt-1 font-body text-xs text-ink/50">
                             {duration}
@@ -178,6 +191,23 @@ function BookingModal({
                 </ul>
 
                 <div className="mt-6">
+
+                    {/* Name */}
+                    <label
+                        htmlFor="name"
+                        className="text-sm font-medium text-ink"
+                    >
+                        Name
+                    </label>
+
+                    <input
+                        id="name"
+                        type="text"
+                        name="name"
+                        value={name}
+                        onChange={handleFieldValueChange}
+                        className="mt-2 w-full rounded-xl border border-ink/10 bg-white/60 p-3 text-ink outline-none"
+                    />
 
                     {/* Quantity */}
                     <label
