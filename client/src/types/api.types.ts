@@ -12,14 +12,12 @@ export type LeadStatus = "unread" | "read";
 
 export interface Lead {
   _id: string;
-  customer: {
-    email: string;
-    phone: string;
-  };
-  package: {
-    name: string;
-    price: number;
-  };
+  name: string;
+  email: string;
+  phone: string;
+  packageName: string;
+  quantity: number;
+  price: number;
   leadStatus: LeadStatus;
   createdAt: string;
   updatedAt: string;
@@ -78,3 +76,40 @@ export interface DeleteLeadResponse {
 export type HealthResponse =
   | LogoutResponse
   | ApiError;
+
+
+
+/* ---------- Payments ---------- */
+
+export interface CreateOrderRequest {
+  price: number;
+}
+
+export interface RazorpayOrder {
+  id: string;
+  amount: number;
+  currency: string;
+  receipt?: string;
+}
+
+export interface VerifyPaymentRequest {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  name: string;
+  email: string;
+  phone: string;
+  packageName: string;
+  quantity: number;
+  price: number;
+}
+
+/* ---------- Payment Responses ---------- */
+
+export type CreateOrderResponse = ApiSuccess<RazorpayOrder>;
+
+export interface VerifyPaymentResponse {
+  success: true;
+  message: string;
+}
+
