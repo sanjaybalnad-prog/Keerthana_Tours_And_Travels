@@ -94,7 +94,7 @@ function BookingModal({
     includes,
     onClose,
 }: TPackage & { onClose: () => void }) {
-    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;;
     const PHONE_NUMBER_REGEX = /^[6-9]\d{9}$/;
 
     const [name, setName] = useState("");
@@ -119,8 +119,7 @@ function BookingModal({
                 break;
 
             case "phoneNumber":
-                if (isNaN(Number(e.target.value)) || e.target.value.length > 10) return;
-
+                if (!/^\d{0,10}$/.test(e.target.value)) return;
                 setPhoneNumber(e.target.value);
                 break;
 
@@ -131,7 +130,7 @@ function BookingModal({
     const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!name) {
+        if (!name.trim()) {
             setError("Name is required");
             return;
         }
@@ -141,8 +140,8 @@ function BookingModal({
             return;
         }
 
-        if (headCount <= 0) {
-            setError("Headcount should not be a negetive number or 0");
+        if (!Number.isInteger(headCount) || headCount < 1) {
+            setError("Number of travellers must be a positive whole number");
             return;
         }
 
@@ -174,7 +173,7 @@ function BookingModal({
                         </p>
                     </div>
 
-                    <button onClick={onClose} aria-label="Close modal">
+                    <button type="button" onClick={onClose} aria-label="Close modal">
                         ✕
                     </button>
                 </div>
@@ -229,7 +228,7 @@ function BookingModal({
 
                     {/*  Email */}
                     <label
-                        htmlFor="headCount"
+                        htmlFor="email"
                         className="text-sm font-medium text-ink"
                     >
                         Email for contact
@@ -245,7 +244,7 @@ function BookingModal({
                     />
                     {/* Phone number */}
                     <label
-                        htmlFor="headCount"
+                        htmlFor="phoneNumber"
                         className="text-sm font-medium text-ink"
                     >
                         Phone number for contact
