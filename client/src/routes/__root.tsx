@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LenisProvider } from "../components/lenis-provider";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -143,6 +144,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LenisProvider>
+        <Toaster/>
         <div className="relative min-h-screen font-body text-ink antialiased">
           <div className="kt-bg" />
           <div className="kt-bg-dot opacity-50" />

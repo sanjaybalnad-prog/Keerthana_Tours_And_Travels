@@ -1,6 +1,9 @@
 
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { paymentApi } from "@/features/payment.api";
+import { toast } from "sonner";
+import { openRazorpayCheckout } from "@/utils/razorpay.util";
 
 export type TPackage = {
     id: number;
@@ -103,7 +106,6 @@ function BookingModal({
     const [phoneNumber, setPhoneNumber] = useState("");
     const [error, setError] = useState("");
 
-
     const handleFieldValueChange = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
         switch (e.target.name) {
             case "name":
@@ -127,7 +129,7 @@ function BookingModal({
     }
 
 
-    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!name.trim()) {
@@ -157,7 +159,54 @@ function BookingModal({
 
         setError("")
         // TODO: Create Order
+        try {
+            const { data: order } = await paymentApi.createOrder(price * headCount);
+            openRazorpayCheckout({
+                email,
+                name,
+                onFailure: handlePaymentFailure,
+                onSuccess: handlePaymentSuccess,
+                orderId: order.id,
+                phone: phoneNumber
 
+            })
+
+
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message);
+                return;
+            }
+            toast.error("Something went wrong");
+            console.log(error);
+        }
+
+    }
+
+     async function handlePaymentSuccess (response: {
+        razorpay_order_id: string;
+        razorpay_payment_id: string;
+        razorpay_signature: string;
+    }){
+        const res = await paymentApi.verifyPayment({
+            name,
+            email,
+            packageName,
+            phone:phoneNumber,
+            price:price * headCount,
+            quantity:headCount,
+            razorpay_order_id:response.razorpay_order_id,
+            razorpay_payment_id:response.razorpay_payment_id,
+            razorpay_signature:response.razorpay_signature,
+        })
+
+        toast.success(res.message + " Our team will contact you soon !!!")
+        onClose()
+    }
+
+    async function handlePaymentFailure (err:string){
+        toast.error(err)
+        onClose()
     }
 
     return (
@@ -277,7 +326,7 @@ function BookingModal({
                         type="submit"
                         className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black"
                     >
-                        Continue
+                        Proceed to pay
                     </button>
                 </div>
             </div>
