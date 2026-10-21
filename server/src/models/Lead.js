@@ -3,6 +3,10 @@ import mongoose from 'mongoose';
 
 const leadSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      required: true
+    },
     name: {
       type: String,
       required: [true, 'Customer name is required'],
