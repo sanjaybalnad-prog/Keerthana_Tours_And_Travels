@@ -50,7 +50,8 @@ const leadSchema = new mongoose.Schema(
     },
     isDeleted: {
       type: Boolean,
-      default: false
+      default: false,
+      select:false
     }
   },
   {
