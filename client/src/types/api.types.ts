@@ -59,6 +59,10 @@ export interface LogoutResponse {
 export interface LeadsListResponse {
   success: true;
   count: number;
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
   data: Lead[];
 }
 
