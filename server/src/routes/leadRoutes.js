@@ -6,13 +6,12 @@ import {
   toggleLeadStatus,
 } from '../controllers/leadController.js';
 import { requireAdmin } from '../middleware/auth.js';
-import { validateObjectId } from '../middleware/validateObjectId.js';
+
 
 const router = Router();
 
 // Every lead route requires an authenticated admin.
 router.use(requireAdmin);
-router.param('id', validateObjectId);
 
 router.get('/', getLeads);
 router.get('/:id', getLeadById);

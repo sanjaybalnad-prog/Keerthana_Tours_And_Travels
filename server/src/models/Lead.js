@@ -48,6 +48,10 @@ const leadSchema = new mongoose.Schema(
       enum: ['unread', 'read'],
       default: 'unread',
     },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

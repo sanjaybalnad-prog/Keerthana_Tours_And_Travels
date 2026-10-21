@@ -2,7 +2,10 @@ import Lead, { LEAD_STATUSES } from '../models/Lead.js';
 import { ApiError } from '../utils/ApiError.js';
 
 const findLeadOr404 = async (id) => {
-  const lead = await Lead.findById(id);
+  const lead = await Lead.findOne({
+    _id: id,
+    isDeleted: false,
+  });
   if (!lead) {
     throw new ApiError(404, 'Lead not found');
   }
@@ -11,7 +14,9 @@ const findLeadOr404 = async (id) => {
 
 export const getLeads = async (req, res) => {
   const { status } = req.query;
-  const filter = {};
+  const filter = {
+    isDeleted:false
+  };
 
   if (status !== undefined) {
     if (typeof status !== 'string' || !LEAD_STATUSES.includes(status)) {
@@ -37,9 +42,11 @@ export const toggleLeadStatus = async (req, res) => {
 };
 
 export const deleteLead = async (req, res) => {
-  const lead = await Lead.findByIdAndDelete(req.params.id); // real deletion, not soft delete
+  const lead = await findLeadOr404(req.params.id); // real deletion, not soft delete
   if (!lead) {
     throw new ApiError(404, 'Lead not found');
   }
-  res.status(200).json({ success: true, message: 'Lead deleted permanently' });
+  lead.isDeleted = true
+  await lead.save()
+  res.status(200).json({ success: true, message: 'Lead deleted' });
 };
