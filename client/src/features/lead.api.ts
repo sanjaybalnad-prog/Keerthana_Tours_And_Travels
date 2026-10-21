@@ -8,12 +8,20 @@ import type {
 } from "@/types/api.types";
 
 export const leadApi = {
-    async getLeads(status?: LeadStatus) {
-        const query = status ? `?status=${encodeURIComponent(status)}` : "";
-
-        return request<LeadsListResponse>(`/api/admin/leads${query}`, {
-            method: "GET",
+    async getLeads(page = 1, limit = 10, status?: LeadStatus) {
+        const params = new URLSearchParams({
+            page: String(page),
+            limit: String(limit),
         });
+
+        if (status) {
+            params.set("status", status);
+        }
+
+        return request<LeadsListResponse>(
+            `/api/admin/leads?${params.toString()}`,
+            { method: "GET" }
+        );
     },
 
     async getLeadById(id: string) {
